@@ -5,12 +5,12 @@ appreciated and encouraged.
 
 ## Table of contents
 
-1. [Code of Conduct](code-of-conduct)
-2. [How to contribute](how-to-contribute)
-    1. [Creating issues](creating-issues)
-    3. [Opening pull requests](opening-pull-requests)
-4. [How to run locally](how-to-run-locally)
-3. [Additional information](additional-information)
+1. Code of Conduct
+2. How to contribute
+    1. Creating issues
+    3. Opening pull requests
+4. How to run locally
+3. Additional information
 
 ## Code of Conduct
 
