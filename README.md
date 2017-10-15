@@ -82,10 +82,10 @@ import Cachier from 'browser-cachier';
 
 let urlsToCache = ['/file1', '/file2'];
 
-new Cachier().add(filesToCache)
-  .update(filesToCache)
-  .get(filesToCache)
-  .delete(filesToCache);
+new Cachier().add(urlsToCache)
+  .update(urlsToCache)
+  .get(urlsToCache)
+  .delete(urlsToCache);
 
 document.addEventListener('stateChange', event => {
   console.log(event.detail);
