@@ -1,11 +1,10 @@
 {
-  "name": "cachier",
+  "name": "browser-cachier",
   "version": "1.0.0",
   "description": "Simple, manually controlled Cache Storage library",
   "main": "./src/cachier.js",
   "scripts": {
     "build": "webpack",
-    "prepublish": "npm run build",
     "lint": "eslint ./src --max-warnings 0",
     "esdoc": "esdoc",
     "test": "jest",
