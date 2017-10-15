@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cachier</title>
+    <script type="text/javascript" src="lib/cachier.js"></script>
+    <script>
+        let cachier = new Cachier({
+            version: 14
+        });
+
+        var filesToCache = [
+            '/dummy/images/1.png',
+            '/dummy/images/2.png',
+            '/dummy/images/3.png',
+            '/dummy/style.css',
+            'dummy/dummy.json',
+            'dummy/offline.html'
+        ];
+
+        cachier.add(filesToCache);
+
+        document.addEventListener('stateChange', function (event) {
+            console.log(event.detail);
+        });
+    </script>
+    <link rel="stylesheet" href="dummy/style.css">
+</head>
+<body>
+    <h1>Cached</h1>
+    <img src="/dummy/images/1.png">
+    <img src="/dummy/images/2.png">
+    <img src="/dummy/images/3.png">
+</body>
+</html>
