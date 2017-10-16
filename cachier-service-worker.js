@@ -250,6 +250,10 @@ let getConfig = () => {
 
             getConfig.openCursor().onsuccess = (event) => {
                 resolve(event.target.result);
+            };
+
+            database.transaction.onerror = (error) => {
+                reject(error);
             }
         };
 

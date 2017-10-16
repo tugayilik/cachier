@@ -4,11 +4,13 @@ export default class Cashier {
 
     constructor (config = {}) {
         const defaults = {
-            version: 1
+            version: 1,
+            serviceWorkerPath: './cachier-service-worker.js',
+            debug: false
         };
 
         this.config = Object.assign({}, defaults, config);
-        this.events = new Events();
+        this.events = new Events(this.config);
         this.initializeServiceWorker();
     }
 
@@ -37,6 +39,6 @@ export default class Cashier {
     }
 
     initializeServiceWorker () {
-        this.events.initializeServiceWorker(this.config);
+        this.events.initializeServiceWorker();
     }
 }
