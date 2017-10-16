@@ -55,9 +55,9 @@ Cachier instance takes one argument which is config. The accepted configs descri
 
 Adds provided url list to cache storage. If the provided url is in the cache already, it doesn't add it again. The url list returned from callback.
 
-**`cachier.update(urls: Array, callback: Function~response): Cachier`**
+**`cachier.get(urls: Array, callback: Function~response): Cachier`**
 
-Updates the cache content of provided files. The url list returned from callback.
+Get cache key from storage. If urls argument not sent by user, it gets all otherwise gets single one. As a result it returns true or false according to its existence
 
 **`cachier.update(urls: Array, callback: Function~response): Cachier`**
 
