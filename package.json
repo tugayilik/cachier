@@ -1,6 +1,6 @@
 {
   "name": "browser-cachier",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta.1",
   "description": "Simple, manually controlled Cache Storage library",
   "main": "./src/cachier.js",
   "scripts": {
