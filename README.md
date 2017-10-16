@@ -118,7 +118,7 @@ setTimeout(() => {
 
 Do not hesitate to contribute! It is a new born baby and open to ideas.
 
-For more information, please checkout the [contribution document](https://github.com/tugayilik/cachier/blob/master/CONTRIBUTION.md).
+For more information, please checkout the [contribution document](https://github.com/tugayilik/cachier/blob/master/CONTRIBUTING.md).
 
 ## Copyright
 
