@@ -1,5 +1,5 @@
 {
-  "name": "browser-cachier",
+  "name": "@tugayilik/cachier",
   "version": "1.0.0",
   "description": "Simple, manually controlled Cache Storage library",
   "main": "./src/cachier.js",

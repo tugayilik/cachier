@@ -7,13 +7,17 @@ import Config from './config';
  */
 export default class Events {
 
-    initializeServiceWorker (config) {
+    constructor (userConfig) {
+        this.config = Object.assign({}, userConfig, Config);
+    }
+
+    initializeServiceWorker () {
         if ('serviceWorker' in navigator) {
-            this.initializeIndexedDB(config, () => {
-                Events.storeDataInIndexedDB(Config.TABLE_NAME, {
+            this.initializeIndexedDB(() => {
+                this.storeDataInIndexedDB(this.config.tableName, {
                     id: 1,
                     name: 'version',
-                    value: Utils.adjustIndexedDbVersion(config.version)
+                    value: Utils.adjustIndexedDbVersion(this.config.version)
                 });
             }).then(this.registerServiceWorker());
         } else {
@@ -26,7 +30,7 @@ export default class Events {
      * Triggers ready after registration
      */
     registerServiceWorker () {
-        navigator.serviceWorker.register(Config.SERVICE_WORKER_PATH, {
+        navigator.serviceWorker.register(this.config.serviceWorkerPath, {
             scope: '/'
         }).then(() => {
             return navigator.serviceWorker.ready;
@@ -42,20 +46,20 @@ export default class Events {
      * @param callback <Function>
      * @returns {Promise}
      */
-    initializeIndexedDB (config = {}, callback = () => {}) {
+    initializeIndexedDB (callback = () => {}) {
 
         return new Promise((resolve, reject) => {
             let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-            let DBOpenRequest = indexedDB.open(Config.DB_NAME, Utils.adjustIndexedDbVersion(config.version));
+            let DBOpenRequest = indexedDB.open(this.config.DBName, Utils.adjustIndexedDbVersion(this.config.version));
 
             DBOpenRequest.onupgradeneeded = event => {
-                Config.DATABASE = event.target.result;
-                Config.TRANSACTION = event.target.transaction;
+                this.config.database = event.target.result;
+                this.config.transaction = event.target.transaction;
 
                 // Remove previous object store for upgrading version
-                Events.clearOutOfDateObjectStore(event);
+                this.clearOutOfDateObjectStore(event);
 
-                let store = Config.DATABASE.createObjectStore(Config.TABLE_NAME, {
+                let store = this.config.database.createObjectStore(this.config.tableName, {
                     keyPath: 'id',
                     autoIncrement: true
                 });
@@ -79,8 +83,8 @@ export default class Events {
      * @param table
      * @param data
      */
-    static storeDataInIndexedDB (table, data) {
-        let objectStore = Config.TRANSACTION.objectStore(table);
+    storeDataInIndexedDB (table, data) {
+        let objectStore = this.config.transaction.objectStore(table);
         objectStore.add(data);
     }
 
@@ -90,9 +94,9 @@ export default class Events {
      *
      * @returns {Promise}
      */
-    static clearOutOfDateObjectStore (event) {
+    clearOutOfDateObjectStore (event) {
         if (event.oldVersion > 0 && event.oldVersion !== event.newVersion) {
-            Config.DATABASE.deleteObjectStore(Config.TABLE_NAME);
+            this.config.database.deleteObjectStore(this.config.tableName);
         }
     }
 

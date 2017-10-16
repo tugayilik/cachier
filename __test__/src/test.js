@@ -1,12 +1,10 @@
 import Config from '../../src/config';
 import Cachier from '../../src/cachier';
 import Utils from '../../src/utils';
-import makeServiceWorkerEnv from 'service-worker-mock';
-
 
 describe('Service Worker', () => {
     it('checks service worker path', () => {
-        expect(Config.SERVICE_WORKER_PATH).toBeTruthy();
+        expect(Config.serviceWorkerPath).toBeTruthy();
     });
 });
 
@@ -35,14 +33,6 @@ describe('Events', () => {
 });
 
 describe('Utils', () => {
-    it('checks exception fires in debug mode', () => {
-        expect(() => { Utils.exceptionHandler('Example error exception fired') })
-            .toThrow('Error Occured: Example error exception fired');
-    });
-
-    it('checks status handler', () => {
-        expect(Utils.statusHandler('Test Information')).toBe('Test Information');
-    });
 
     it('checks if the version given by user is below|equal 0 makes it 1', () => {
         expect(Utils.adjustIndexedDbVersion(0)).toBe(1);
@@ -58,17 +48,5 @@ describe('Utils', () => {
 
     it('checks if the version given by user is decimal, it rounds it up', () => {
         expect(Utils.adjustIndexedDbVersion(2.5)).toBe(3);
-    });
-});
-
-describe('Service worker', () => {
-    beforeEach(() => {
-        Object.assign(global, makeServiceWorkerEnv());
-        jest.resetModules();
-    });
-    it('should add listeners', () => {
-        require('../../cachier-service-worker.js');
-        expect(self.listeners['activate']).toBeDefined();
-        expect(self.listeners['fetch']).toBeDefined();
     });
 });

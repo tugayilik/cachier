@@ -30,13 +30,13 @@ Cache your content on clients browser with Cachier! `Cachier`, uses `Cache Stora
 You can install the library via npm.
 
 ```
-npm install browser-cachier --save
+npm install @tugayilik/cachier --save
 ```
 
 or via yarn:
 
 ```
-yarn add browser-cachier
+yarn add @tugayilik/cachier
 ```
 
 > **Warning:** You need to put [cachier-service-worker.js](https://github.com/tugayilik/cachier/blob/develop/cachier-service-worker.js) to your sites `root directory`.
@@ -70,6 +70,14 @@ Delete provided url list from cache storage
 **`version {String|Number}`** 
 
 Sets a version to cache storage. After caching process completed for the first time, it will stay till user clears the cache storage. To overcome this, you can upgrade the version to a greater value. It will clear out of date storages and will set a new one.
+
+**`serviceWorkerPath {String}`**
+
+Cachier is using [cachier-service-worker.js](https://github.com/tugayilik/cachier/blob/develop/cachier-service-worker.js) to create a layer between network requests and cache. File should be placed on your root directory to observe all scope. This parameter is the location of service worker.
+
+**`debug {Boolean}`**
+
+If it is true, it gives information on the console about what is going on.
 
 ### Listeners
 
