@@ -39,6 +39,8 @@ or via yarn:
 yarn add browser-cachier
 ```
 
+> **Warning:** You need to put [cachier-service-worker.js](https://github.com/tugayilik/cachier/blob/develop/cachier-service-worker.js) to your sites `root directory`.
+
 ## Cachier
 
 ### API
