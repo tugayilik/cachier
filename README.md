@@ -67,6 +67,10 @@ Updates the cache content of provided files. The url list returned from callback
 
 Delete provided url list from cache storage. The url list returned from callback.
 
+**`cachier.clear(callback: Function~response): Cachier`**
+
+Empty all cache storage. The deleted item list returned from callback.
+
 ### Options
 
 **`version {String|Number}`** 
