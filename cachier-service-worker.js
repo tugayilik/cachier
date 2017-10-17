@@ -64,9 +64,13 @@ self.addEventListener('message', event => {
             case 'delete':
                 deleteUrls(cache, event);
                 break;
-
+            // Update existing cache key
             case 'update':
                 update(cache, event);
+                break;
+            // Clear all cache storage
+            case 'clear':
+                clear(cache, event);
                 break;
             default:
                 // This will be handled by the outer .catch().
@@ -195,13 +199,15 @@ let add = (cache, event) => {
  * @returns {Promise.<TResult>}
  */
 let deleteUrls = (cache, event) => {
-    return Promise.all(event.data.url.map(url => {
+    let urlList = event.data ? event.data.url : event;
+
+    return Promise.all(urlList.map(url => {
         return cache.delete(url).then(success => {
             sendMessageToClient({
                 event: event,
                 error: success ? null : 'Item was not found in the cache.',
                 message: {
-                    url: event.data.url,
+                    url: urlList,
                     status: success
                 }
             });
@@ -231,6 +237,16 @@ let update = (cache, event) => {
                 status: true
             }
         });
+    });
+};
+
+let clear = (cache) => {
+    cache.keys().then(requests => {
+        return requests.map(request => {
+            return request.url;
+        }).sort();
+    }).then(urls => {
+        deleteUrls(cache, urls);
     });
 };
 

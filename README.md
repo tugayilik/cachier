@@ -107,11 +107,18 @@ cachier.get('/dummy/style.css', response => {
   console.log('Get: ', response);
 });
 
+// Remove specific cache items after 1500ms
 setTimeout(() => {
   cachier.delete(urlsToCache, response => {
     console.log('Delete: ', response);
   });
 }, 1500)
+
+// Remove whole cache on page load
+window.onload = function () {
+  cachier.clear();
+};
+
 ```
 
 ## Contributing

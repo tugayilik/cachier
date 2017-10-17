@@ -30,6 +30,10 @@ export default class Cashier {
         this.events.update(urls, callback);
     }
 
+    clear (callback) {
+        this.events.clear(callback);
+    }
+
     initializeServiceWorker () {
         this.events.initializeServiceWorker();
     }

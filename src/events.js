@@ -198,6 +198,20 @@ export default class Events {
     }
 
     /**
+     * Clear all cache storage data
+     *
+     * @returns {Promise.<TResult>}
+     */
+    clear (callback = this.noop) {
+        return this.dialogWithServiceWorker({
+            command: 'clear'
+        }).then(event => {
+            StateManager.set('clear', event);
+            callback(event.message);
+        });
+    }
+
+    /**
      * Allows communicate with ServiceWorker
      * It does both job, send message and receives it
      * Triggering the client message event happens on ServiceWorker <service-worker.js>

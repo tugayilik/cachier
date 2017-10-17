@@ -24,7 +24,9 @@ describe('Events', () => {
         const cachier = new Cachier();
         expect(typeof cachier.add === 'function' &&
             typeof cachier.get === 'function' &&
-            typeof cachier.delete === 'function' && typeof cachier.update &&
+            typeof cachier.delete === 'function' &&
+            typeof cachier.update === 'function' &&
+            typeof cachier.clear === 'function' &&
             typeof cachier.initializeServiceWorker === 'function'
         ).toBe(true);
     });
