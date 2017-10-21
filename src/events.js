@@ -124,7 +124,7 @@ export default class Events {
             url: urls
         }).then(event => {
             StateManager.set('add', event);
-            callback(event.message.url);
+            callback(event.message);
         });
     }
 
@@ -149,7 +149,7 @@ export default class Events {
             url: urls
         }).then(event => {
             StateManager.set('keys', event);
-            callback(event.message.url);
+            callback(event.message);
         });
     }
 
@@ -171,7 +171,7 @@ export default class Events {
             url: urls
         }).then(event => {
             StateManager.set('delete', event);
-            callback(event.message.url);
+            callback(event.message);
         });
     }
 
@@ -193,7 +193,7 @@ export default class Events {
             url: urls
         }).then(event => {
             StateManager.set('update', event);
-            callback(event.message.url);
+            callback(event.message);
         });
     }
 

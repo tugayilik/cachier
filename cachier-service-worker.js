@@ -135,6 +135,10 @@ let cleanOutOfDateCaches = () => {
  * @returns {Promise.<TResult>}
  */
 let get = (cache, event) => {
+    let treatedUrls = {
+        success: []
+    };
+
     return cache.keys().then(requests => {
         let urls = requests.map(request => {
             return request.url;
@@ -142,19 +146,17 @@ let get = (cache, event) => {
 
         // If the client asking for a specific URL for its existence
         // It returns true or false according to its result
-        if (event.data.urls) {
+        if (event.data.url) {
             return urls.filter(url => {
-                    return url.indexOf(event.data.urls) > -1;
-                }).length > 0;
+                return url.indexOf(event.data.url) > -1;
+            }).length > 0;
         }
         return urls.sort();
     }).then(urls => {
+        treatedUrls.success = urls;
         sendMessageToClient({
             event,
-            message: {
-                url: urls,
-                status: true
-            }
+            message: treatedUrls
         });
     });
 };
@@ -168,27 +170,54 @@ let get = (cache, event) => {
  * @returns {Promise.<TResult>}
  */
 let add = (cache, event) => {
-    return Promise.all(event.data.url.map(async url => {
-        let cacheMatch = await cache.match(url);
+    let addProcess = {
+        success: [],
+        existing: [],
+        failed: []
+    };
 
-        if (!cacheMatch) {
-            let request = new Request(url, {mode: 'no-cors'});
-
-            return fetch(request).then(response => {
-                if (!response.ok) {
-                    return;
+    // Wait till all cache.match promises finish
+    return Promise.all(event.data.url.map(url => {
+        return new Promise((resolve, reject) => {
+            cache.match(url).then(response => {
+                if (response && response.ok) {
+                    addProcess.existing.push(response.url);
                 }
 
-                cache.put(url, response);
-            }).then(sendMessageToClient({
+                resolve({
+                    url,
+                    found: response ? true : false,
+                    code: response ? response.status : null
+                });
+            }).catch(error => { reject(error); });
+        })
+    })).then(response => {
+        // Wait till all fetch promises finish
+        Promise.all(response.map(cacheData => {
+            if (!response.code) {
+                let url = cacheData.url;
+                let request = new Request(url, {mode: 'no-cors'});
+
+                return fetch(request);
+            }
+        })).then(fetchResult => {
+            // Wait till all cache.put promises finish
+            Promise.all(fetchResult.map(response => {
+                let url = response.url;
+                if (response.status !== 200) {
+                    addProcess.failed.push(url);
+                } else {
+                    if (addProcess.existing.indexOf(url) === -1) {
+                        addProcess.success.push(url);
+                    }
+                    return cache.put(url, response);
+                }
+            })).then(sendMessageToClient({
                 event,
-                message: {
-                    url: event.data.url,
-                    status: true
-                }
+                message: addProcess
             }));
-        }
-    }));
+        });
+    });
 };
 
 /**
@@ -199,19 +228,32 @@ let add = (cache, event) => {
  * @returns {Promise.<TResult>}
  */
 let deleteUrls = (cache, event) => {
+    let deleteProcess = {
+        success: [],
+        failed: []
+    };
+
     let urlList = event.data ? event.data.url : event;
 
     return Promise.all(urlList.map(url => {
-        return cache.delete(url).then(success => {
-            sendMessageToClient({
-                event: event,
-                error: success ? null : 'Item was not found in the cache.',
-                message: {
-                    url: urlList,
-                    status: success
+        return new Promise((resolve, reject) => {
+            cache.delete(url).then(success => {
+                // If found in cache and removed
+                if (success) {
+                    deleteProcess.success.push(url);
+                } else { // Not found in cache or any error happened
+                    deleteProcess.failed.push(url);
                 }
-            });
-        });
+
+                resolve({
+                    url,
+                    deleted: success
+                });
+            }).catch(error => { reject(error); });
+        })
+    })).then(sendMessageToClient({
+        event: event,
+        message: deleteProcess
     }));
 };
 
@@ -222,20 +264,41 @@ let deleteUrls = (cache, event) => {
  * @param event {Object}
  */
 let update = (cache, event) => {
+    let updateProcess = {
+        success: [],
+        failed: []
+    };
+
     return Promise.all(event.data.url.map(url => {
-        return caches.match(url).then(() => {
+        return new Promise((resolve, reject) => {
+            caches.match(url).then(response => {
+                resolve({
+                    url,
+                    found: response ? true : false,
+                    code: response ? response.status : null
+                })
+            }).catch(error => { reject(error); });
+        })
+    })).then(responses => {
+        Promise.all(responses.map(response => {
+            let url = response.url;
             let request = new Request(url, {mode: 'no-cors'});
-            return fetch(request).then(response => {
-                cache.put(url, response);
-            });
-        });
-    })).then(() => {
-        sendMessageToClient({
-            event: event,
-            message: {
-                url: event.data.url,
-                status: true
-            }
+            return fetch(request);
+        })).then(fetchResponses => {
+            Promise.all(fetchResponses.map(response => {
+                let url = response.url;
+                if (response.status !== 200) {
+                    updateProcess.failed.push(url);
+                } else {
+                    if (updateProcess.success.indexOf(url) === -1) {
+                        updateProcess.success.push(url);
+                    }
+                    return cache.put(url, response);
+                }
+            })).then(sendMessageToClient({
+                event: event,
+                message: updateProcess
+            }));
         });
     });
 };
