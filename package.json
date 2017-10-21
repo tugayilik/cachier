@@ -15,11 +15,13 @@
     "url": "https://github.com/tugayilik/cachier"
   },
   "keywords": [
-    "cachier",
     "cache storage",
     "service worker",
     "offline",
-    "cache"
+    "cache",
+    "pwa",
+    "progressive web",
+    "progressive web app"
   ],
   "author": "Tugay İlik",
   "license": "MIT",
