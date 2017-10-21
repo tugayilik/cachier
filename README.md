@@ -123,6 +123,11 @@ window.onload = function () {
   cachier.clear();
 };
 
+// Capture state change events
+document.addEventListener('stateChange', function (result) {
+    console.log('State: ', result.detail)
+});
+
 ```
 
 ## Contributing
