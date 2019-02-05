@@ -12,13 +12,13 @@ self.addEventListener('activate', event => {
     event.waitUntil(
         init().then(config => {
             CACHES = {
-                cachier: 'cachier-cache-v' + config.value.value
+                cachier: 'cachier-cache-v' + config.value.value,
             };
         }).then(() => {
             cleanOutOfDateCaches().then(() => {
                 return clients.claim();
             });
-        })
+        }),
     );
 });
 
@@ -81,7 +81,7 @@ self.addEventListener('message', event => {
         // returning a standardized error message to the controlled page.
         sendMessageToClient({
             event,
-            error: error.toString()
+            error: error.toString(),
         });
     });
 
@@ -120,7 +120,7 @@ let cleanOutOfDateCaches = () => {
                 if (expectedCacheNames.indexOf(cacheName) === -1) {
                     return caches.delete(cacheName);
                 }
-            })
+            }),
         );
     });
 };
@@ -136,7 +136,7 @@ let cleanOutOfDateCaches = () => {
  */
 let get = (cache, event) => {
     let treatedUrls = {
-        success: []
+        success: [],
     };
 
     return cache.keys().then(requests => {
@@ -156,7 +156,7 @@ let get = (cache, event) => {
         treatedUrls.success = urls;
         sendMessageToClient({
             event,
-            message: treatedUrls
+            message: treatedUrls,
         });
     });
 };
@@ -173,7 +173,7 @@ let add = (cache, event) => {
     let addProcess = {
         success: [],
         existing: [],
-        failed: []
+        failed: [],
     };
 
     // Wait till all cache.match promises finish
@@ -187,16 +187,16 @@ let add = (cache, event) => {
                 resolve({
                     url,
                     found: response ? true : false,
-                    code: response ? response.status : null
+                    code: response ? response.status : null,
                 });
             }).catch(error => { reject(error); });
-        })
+        });
     })).then(response => {
         // Wait till all fetch promises finish
         Promise.all(response.map(cacheData => {
             if (!response.code) {
                 let url = cacheData.url;
-                let request = new Request(url, {mode: 'no-cors'});
+                let request = new Request(url, { mode: 'no-cors' });
 
                 return fetch(request);
             }
@@ -214,7 +214,7 @@ let add = (cache, event) => {
                 }
             })).then(sendMessageToClient({
                 event,
-                message: addProcess
+                message: addProcess,
             }));
         });
     });
@@ -230,7 +230,7 @@ let add = (cache, event) => {
 let deleteUrls = (cache, event) => {
     let deleteProcess = {
         success: [],
-        failed: []
+        failed: [],
     };
 
     let urlList = event.data ? event.data.url : event;
@@ -247,13 +247,13 @@ let deleteUrls = (cache, event) => {
 
                 resolve({
                     url,
-                    deleted: success
+                    deleted: success,
                 });
             }).catch(error => { reject(error); });
-        })
+        });
     })).then(sendMessageToClient({
         event: event,
-        message: deleteProcess
+        message: deleteProcess,
     }));
 };
 
@@ -266,7 +266,7 @@ let deleteUrls = (cache, event) => {
 let update = (cache, event) => {
     let updateProcess = {
         success: [],
-        failed: []
+        failed: [],
     };
 
     return Promise.all(event.data.url.map(url => {
@@ -274,15 +274,15 @@ let update = (cache, event) => {
             caches.match(url).then(response => {
                 resolve({
                     url,
-                    found: response ? true : false,
-                    code: response ? response.status : null
-                })
+                    found: !!response,
+                    code: response ? response.status : null,
+                });
             }).catch(error => { reject(error); });
-        })
+        });
     })).then(responses => {
         Promise.all(responses.map(response => {
             let url = response.url;
-            let request = new Request(url, {mode: 'no-cors'});
+            let request = new Request(url, { mode: 'no-cors' });
             return fetch(request);
         })).then(fetchResponses => {
             Promise.all(fetchResponses.map(response => {
@@ -297,7 +297,7 @@ let update = (cache, event) => {
                 }
             })).then(sendMessageToClient({
                 event: event,
-                message: updateProcess
+                message: updateProcess,
             }));
         });
     });
@@ -353,7 +353,7 @@ let sendMessageToClient = data => {
             const client = clients[i];
             client.postMessage({
                 error: data.error || null,
-                message: data.message || null
+                message: data.message || null,
             });
         }
     });

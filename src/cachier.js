@@ -1,7 +1,6 @@
 import Events from './events';
 
-export default class Cashier {
-
+export default class Cachier {
     constructor (config = {}) {
         const defaults = {
             version: 1,
@@ -14,11 +13,11 @@ export default class Cashier {
         this.initializeServiceWorker();
     }
 
-    add (urls, callback) {
+    add (urls, callback = () => {}) {
         this.events.add(urls, callback);
     }
 
-    get (urls, callback) {
+    get (urls = [], callback) {
         this.events.get(urls, callback);
     }
 

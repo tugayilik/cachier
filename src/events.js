@@ -133,11 +133,11 @@ export default class Events {
      * If the url is provided, it gets single key and returns
      * true or false in url property of state
      *
-     * @param urls {Array|null}
+     * @param [urls] {Array}
      * @param callback {Function}
      * @returns {Promise.<TResult>}
      */
-    get (urls, callback = this.noop) {
+    get (urls = [], callback = this.noop) {
         // If the optional urls argument doesn't set, handle it
         if (typeof urls === 'function') {
             callback = urls;

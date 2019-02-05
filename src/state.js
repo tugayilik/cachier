@@ -7,8 +7,8 @@ export default class StateManager {
             action,
             state: {
                 error: event.error,
-                message: event.message
-            }
+                message: event.message,
+            },
         });
 
         // Prevent causing error on legacy browsers
